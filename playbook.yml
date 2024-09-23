@@ -1,0 +1,5 @@
+- name: Play
+  hosts: all
+  tasks:
+    - name: Task1
+      ping:
