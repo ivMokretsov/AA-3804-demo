@@ -9,8 +9,8 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Получение переменных из окружения
-api_token = os.getenv('AWX_API_TOKEN')
-template_id = os.getenv('AWX_TEMPLATE_ID')
+api_token = os.getenv('AAC_API_TOKEN')
+template_id = os.getenv('AAC_TEMPLATE_ID')
 
 # Название инвентори файла
 inventory_file = 'local_inventory.ini'
@@ -20,7 +20,7 @@ inventory_file_path = os.path.join(os.path.dirname(__file__), inventory_file)
 
 # Обработка ошибок, если переменные не заданы
 if not api_token:
-    raise ValueError("API Token не задан через переменную окружения 'AWX_API_TOKEN'!")
+    raise ValueError("API Token не задан через переменную окружения 'AAC_API_TOKEN'!")
 
 def extract_ansible_vars(variables):
     """Извлечение ansible_host и ansible_user из переменных"""
@@ -92,7 +92,7 @@ def load_inventory_from_file(file_path):
     return inventory
 
 
-def fetch_inventory_from_awx(api_token, template_id):
+def fetch_inventory_from_aac(api_token, template_id):
     """Получение информации о последней джобе и хостах с неудачным завершением"""
     api_url = f"https://10.177.185.87/api/v2/job_templates/{template_id}/"
     headers = {"Authorization": f"Bearer {api_token}"}
@@ -135,7 +135,7 @@ def fetch_inventory_from_awx(api_token, template_id):
 
         return inventory
     except requests.RequestException as e:
-        sys.stderr.write(f"Ошибка при получении инвентаря из AWX: {e}\n")
+        sys.stderr.write(f"Ошибка при получении инвентаря из AAC: {e}\n")
         return {}
 
 
@@ -145,7 +145,7 @@ def fetch_inventory():
         sys.stderr.write("Template ID не задан. Используется локальный инвентарь.\n")
         return load_inventory_from_file(inventory_file_path)
     else:
-        return fetch_inventory_from_awx(api_token, template_id)
+        return fetch_inventory_from_aac(api_token, template_id)
 
 
 def main():
